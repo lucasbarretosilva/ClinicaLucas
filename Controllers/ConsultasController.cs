@@ -46,9 +46,12 @@ namespace ClinicaLucas.Controllers
             return View(consulta);
         }
 
+       
+
         // GET: Consultas/Create
         public IActionResult Create()
         {
+           
             ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome");
             ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome");
             return View();
@@ -59,16 +62,27 @@ namespace ClinicaLucas.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Data,Protocolo,PacienteId,ExameId")] Consulta consulta)
+        public async Task<IActionResult> Create([Bind("Id,Data,PacienteId,ExameId")] Consulta consulta)
         {
-            if (ModelState.IsValid)
+
+            try
             {
-                _context.Add(consulta);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    consulta.Protocolo = Guid.NewGuid();
+                    _context.Add(consulta);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
             }
-            ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Id", consulta.ExameId);
-            ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Id", consulta.PacienteId);
+
+            catch(Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Ocorreu um erro ao criar a consulta: " + ex.Message);
+            }
+            ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome", consulta.ExameId);
+            ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome", consulta.PacienteId);
             return View(consulta);
         }
 
@@ -85,8 +99,8 @@ namespace ClinicaLucas.Controllers
             {
                 return NotFound();
             }
-            ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Id", consulta.ExameId);
-            ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Id", consulta.PacienteId);
+            ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome", consulta.ExameId);
+            ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome", consulta.PacienteId);
             return View(consulta);
         }
 
@@ -95,7 +109,7 @@ namespace ClinicaLucas.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Data,Protocolo,PacienteId,ExameId")] Consulta consulta)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Data,PacienteId,ExameId")] Consulta consulta)
         {
             if (id != consulta.Id)
             {
@@ -122,8 +136,8 @@ namespace ClinicaLucas.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Id", consulta.ExameId);
-            ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Id", consulta.PacienteId);
+            ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome", consulta.ExameId);
+            ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome", consulta.PacienteId);
             return View(consulta);
         }
 

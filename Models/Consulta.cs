@@ -6,7 +6,7 @@
 
         public DateTime Data { get; set;}
 
-        public Guid Protocolo { get; set; }
+        public Guid? Protocolo { get; set; }
 
         public int PacienteId { get; set; }
 
@@ -14,8 +14,22 @@
 
         public Paciente? Paciente { get; set; }
 
-        public Exame Exame { get; set; }
+        public Exame? Exame { get; set; }
 
+        public Consulta(int id, DateTime data, int pacienteId, int exameId, Paciente? paciente, Exame exame)
+        {
+            Id = id;
+            Data = data;
+            Protocolo = Guid.NewGuid();
+            PacienteId = pacienteId;
+            ExameId = exameId;
+            Paciente = paciente;
+            Exame = exame;
+        }
 
+        public Consulta()
+        {
+
+        }
     }
 }
