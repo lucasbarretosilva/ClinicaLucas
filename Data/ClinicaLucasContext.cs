@@ -15,5 +15,11 @@ namespace ClinicaLucas.Data
         }
 
         public DbSet<ClinicaLucas.Models.Paciente> Paciente { get; set; } = default!;
+
+        public DbSet<ClinicaLucas.Models.TipoExame>? TipoExame { get; set; }
+
+        public DbSet<ClinicaLucas.Models.Exame>? Exame { get; set; }
+
+        public DbSet<ClinicaLucas.Models.Consulta>? Consulta { get; set; }
     }
 }
