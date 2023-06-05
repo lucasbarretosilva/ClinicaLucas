@@ -1,4 +1,6 @@
-﻿namespace ClinicaLucas.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ClinicaLucas.Models
 {
     public class Paciente
     {
@@ -8,6 +10,10 @@
 
         public string Cpf { get; set; }
 
+        [Required]
+        [DataType(DataType.Date)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Nascimento { get; set; }
 
         public string Telefone { get; set; }
@@ -18,7 +24,7 @@
 
         public Paciente()
         {
-            Sexo = Sexo.Masculino;
+           
         }
 
 
