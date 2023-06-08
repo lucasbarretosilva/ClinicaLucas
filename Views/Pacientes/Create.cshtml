@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Cadastro de Paciente</h1>
 
 <h4>Paciente</h4>
 <hr />
@@ -19,7 +19,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Cpf" class="control-label"></label>
-                <input asp-for="Cpf" class="form-control cpf-mask" />
+                <input asp-for="Cpf" class="form-control" />
                 <span asp-validation-for="Cpf" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -28,7 +28,7 @@
                 <span asp-validation-for="Nascimento" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Telefone" class="control-label"></label>
+                <label asp-for="Telefone" class="control-label">Celular</label>
                 <input asp-for="Telefone" class="form-control celular-mask" />
                 <span asp-validation-for="Telefone" class="text-danger"></span>
             </div>
@@ -45,38 +45,31 @@
                 <span asp-validation-for="Sexo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Cadastrar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Voltar para o Painel</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
-    <!-- jQuery -->
+   
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-<!-- jQuery Masked Input -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
 
 
-    <!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-<!-- jQuery Masked Input -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
 
 
 
-    <script>
-        $(document).ready(function() {
-            $('.cpf-mask').mask('999.999.999-99');
-        });
-    </script>
-
+    
     <script>
         $(document).ready(function() {
             $('.celular-mask').mask('(99) 99999-9999');

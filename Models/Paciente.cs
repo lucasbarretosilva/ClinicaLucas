@@ -6,6 +6,7 @@ namespace ClinicaLucas.Models
     {
         public int Id { get; set; }
 
+        [MaxLength(100)]
         public string Nome { get; set; }
 
        // [RegularExpression(@"^\d{3}\.\d{3}\.\d{3}-\d{2}$", ErrorMessage = "CPF inválido.")]

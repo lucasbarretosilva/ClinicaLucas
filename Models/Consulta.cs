@@ -16,7 +16,7 @@
 
         public Exame? Exame { get; set; }
 
-        public Consulta(int id, DateTime data, int pacienteId, int exameId, Paciente? paciente, Exame exame)
+        public Consulta(int id, DateTime data, int pacienteId, int exameId, Paciente? paciente, Exame? exame)
         {
             Id = id;
             Data = data;

@@ -73,10 +73,20 @@ namespace ClinicaLucas.Controllers
         {
             if (ModelState.IsValid)
             {
-                consulta.Protocolo = Guid.NewGuid();
-                _context.Add(consulta);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                
+                bool consultaExistente = await _context.Consulta.AnyAsync(c => c.Data == consulta.Data);
+
+                if (consultaExistente)
+                {
+                    ModelState.AddModelError("Data", "Já existe uma consulta agendada para este horário.");
+                }
+                else
+                {
+                    consulta.Protocolo = Guid.NewGuid();
+                    _context.Add(consulta);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
             ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome", consulta.ExameId);
@@ -84,6 +94,7 @@ namespace ClinicaLucas.Controllers
 
             return View(consulta);
         }
+
 
         public async Task<IActionResult> Edit(int? id)
         {

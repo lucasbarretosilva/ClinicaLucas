@@ -50,6 +50,13 @@ namespace ClinicaLucas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Cpf,Nascimento,Telefone,Email,Sexo")] Paciente paciente)
         {
+            var data = paciente.Nascimento;
+
+            if(data> DateTime.Today)
+            {
+                ModelState.AddModelError("Nascimento", "A data de nascimento não pode ser maior que a de hoje.");
+            }
+
             if (ModelState.IsValid)
             {
                 if (!IsCpfValid(paciente.Cpf))

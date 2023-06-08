@@ -19,29 +19,30 @@
                 <span asp-validation-for="Data" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Protocolo" class="control-label"></label>
-                <input asp-for="Protocolo" class="form-control" />
+               @* <label asp-for="Protocolo" class="control-label"></label>*@
+                <input type="hidden" asp-for="Protocolo" class="form-control" />
                 <span asp-validation-for="Protocolo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PacienteId" class="control-label"></label>
+                <label asp-for="PacienteId" class="control-label">Trocar Paciente</label>
                 <select asp-for="PacienteId" class="form-control" asp-items="ViewBag.PacienteId"></select>
                 <span asp-validation-for="PacienteId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ExameId" class="control-label"></label>
+                <label asp-for="ExameId" class="control-label">Trocar Exame</label>
                 <select asp-for="ExameId" class="form-control" asp-items="ViewBag.ExameId"></select>
                 <span asp-validation-for="ExameId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="form-group" style="padding:20px">
+                <input type="submit" value="Salvar" class="btn btn-success" /> | 
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    
 </div>
 
 @section Scripts {
