@@ -73,20 +73,30 @@ namespace ClinicaLucas.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                bool consultaExistente = await _context.Consulta.AnyAsync(c => c.Data == consulta.Data);
+                if (consulta.Data < DateTime.Now)
+                {
+                    ModelState.AddModelError("Data", $"Não é possível criar uma consulta anterior à {DateTime.Now}.");
+                }
 
-                if (consultaExistente)
-                {
-                    ModelState.AddModelError("Data", "Já existe uma consulta agendada para este horário.");
+                else {
+                    bool consultaExistente = await _context.Consulta.AnyAsync(c => c.Data == consulta.Data);
+
+                    if (consultaExistente)
+                    {
+                        ModelState.AddModelError("Data", "Já existe uma consulta agendada para este horário.");
+                    }
+                    else
+                    {
+                        consulta.Protocolo = Guid.NewGuid();
+                        _context.Add(consulta);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+
+
                 }
-                else
-                {
-                    consulta.Protocolo = Guid.NewGuid();
-                    _context.Add(consulta);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
+                
+                
             }
 
             ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome", consulta.ExameId);
