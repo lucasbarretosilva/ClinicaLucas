@@ -108,7 +108,7 @@ namespace ClinicaLucas.Controllers
             {
                 return NotFound();
             }
-
+            consulta.Protocolo = Guid.NewGuid();
             ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome", consulta.ExameId);
             ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome", consulta.PacienteId);
 
@@ -128,6 +128,7 @@ namespace ClinicaLucas.Controllers
             {
                 try
                 {
+                    consulta.Protocolo = Guid.NewGuid();
                     _context.Update(consulta);
                     await _context.SaveChangesAsync();
                 }
@@ -145,7 +146,7 @@ namespace ClinicaLucas.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-
+            
             ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome", consulta.ExameId);
             ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome", consulta.PacienteId);
 
