@@ -5,6 +5,7 @@ using ClinicaLucas.Data;
 using ClinicaLucas.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace ClinicaLucas.Controllers
 {
@@ -45,30 +46,36 @@ namespace ClinicaLucas.Controllers
             ViewBag.Sexos = SexoEnum();
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Cpf,Nascimento,Telefone,Email,Sexo")] Paciente paciente)
         {
             if (ModelState.IsValid)
             {
-               
-                var cpfExists = await _context.Paciente.AnyAsync(p => p.Cpf == paciente.Cpf);
-                if (cpfExists)
+                if (!IsCpfValid(paciente.Cpf))
                 {
-                    ModelState.AddModelError("Cpf", "CPF já cadastrado.");
+                    ModelState.AddModelError("Cpf", "CPF inválido.");
                 }
                 else
                 {
-                    _context.Add(paciente);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    var cpfExists = await _context.Paciente.AnyAsync(p => p.Cpf == paciente.Cpf);
+                    if (cpfExists)
+                    {
+                        ModelState.AddModelError("Cpf", "CPF já cadastrado.");
+                    }
+                    else
+                    {
+                        _context.Add(paciente);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
             }
 
             ViewBag.Sexos = SexoEnum();
             return View(paciente);
         }
+
 
 
         public async Task<IActionResult> Edit(int? id)
@@ -182,5 +189,52 @@ namespace ClinicaLucas.Controllers
                 Value = s.ToString()
             });
         }
+
+        private bool IsCpfValid(string cpf)
+        {
+           
+            cpf = Regex.Replace(cpf, "[^0-9]", "");
+
+           
+            if (cpf.Length != 11)
+                return false;
+
+            
+            if (new string(cpf[0], 11) == cpf)
+                return false;
+
+            
+            int soma = 0;
+            for (int i = 0; i < 9; i++)
+                soma += (cpf[i] - '0') * (10 - i);
+            int digito1 = 11 - (soma % 11);
+            if (digito1 >= 10)
+                digito1 = 0;
+
+            
+            if (cpf[9] - '0' != digito1)
+                return false;
+
+           
+            soma = 0;
+            for (int i = 0; i < 10; i++)
+                soma += (cpf[i] - '0') * (11 - i);
+            int digito2 = 11 - (soma % 11);
+            if (digito2 >= 10)
+                digito2 = 0;
+
+            
+            if (cpf[10] - '0' != digito2)
+                return false;
+
+            return true;
+        }
+
+
+        
+
+
+
+
     }
 }

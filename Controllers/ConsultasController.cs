@@ -19,17 +19,19 @@ namespace ClinicaLucas.Controllers
             _context = context;
         }
 
-        // GET: Consultas
         public async Task<IActionResult> Index()
         {
-            var clinicaLucasContext = _context.Consulta.Include(c => c.Exame).Include(c => c.Paciente);
-            return View(await clinicaLucasContext.ToListAsync());
+            var consultas = await _context.Consulta
+                .Include(c => c.Exame)
+                .Include(c => c.Paciente)
+                .ToListAsync();
+
+            return View(consultas);
         }
 
-        // GET: Consultas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Consulta == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -38,6 +40,7 @@ namespace ClinicaLucas.Controllers
                 .Include(c => c.Exame)
                 .Include(c => c.Paciente)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (consulta == null)
             {
                 return NotFound();
@@ -46,50 +49,45 @@ namespace ClinicaLucas.Controllers
             return View(consulta);
         }
 
-       
-
-        // GET: Consultas/Create
-        public IActionResult Create()
+        public IActionResult Create(int? pacienteId)
         {
-           
+            if (pacienteId == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome", pacienteId);
+
             ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome");
-            ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome");
+
+            ViewBag.PacienteId = pacienteId;
+
+
             return View();
         }
 
-        // POST: Consultas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Data,PacienteId,ExameId")] Consulta consulta)
         {
-
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    consulta.Protocolo = Guid.NewGuid();
-                    _context.Add(consulta);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-
+                consulta.Protocolo = Guid.NewGuid();
+                _context.Add(consulta);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
 
-            catch(Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, "Ocorreu um erro ao criar a consulta: " + ex.Message);
-            }
             ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome", consulta.ExameId);
             ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome", consulta.PacienteId);
+
             return View(consulta);
         }
 
-        // GET: Consultas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Consulta == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -99,14 +97,13 @@ namespace ClinicaLucas.Controllers
             {
                 return NotFound();
             }
+
             ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome", consulta.ExameId);
             ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome", consulta.PacienteId);
+
             return View(consulta);
         }
 
-        // POST: Consultas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Data,PacienteId,ExameId")] Consulta consulta)
@@ -134,17 +131,19 @@ namespace ClinicaLucas.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["ExameId"] = new SelectList(_context.Exame, "Id", "Nome", consulta.ExameId);
             ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "Nome", consulta.PacienteId);
+
             return View(consulta);
         }
 
-        // GET: Consultas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Consulta == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -153,6 +152,7 @@ namespace ClinicaLucas.Controllers
                 .Include(c => c.Exame)
                 .Include(c => c.Paciente)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (consulta == null)
             {
                 return NotFound();
@@ -161,28 +161,25 @@ namespace ClinicaLucas.Controllers
             return View(consulta);
         }
 
-        // POST: Consultas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Consulta == null)
-            {
-                return Problem("Entity set 'ClinicaLucasContext.Consulta'  is null.");
-            }
             var consulta = await _context.Consulta.FindAsync(id);
-            if (consulta != null)
+            if (consulta == null)
             {
-                _context.Consulta.Remove(consulta);
+                return NotFound();
             }
-            
+
+            _context.Consulta.Remove(consulta);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool ConsultaExists(int id)
         {
-          return (_context.Consulta?.Any(e => e.Id == id)).GetValueOrDefault();
+            return _context.Consulta.Any(e => e.Id == id);
         }
     }
 }
