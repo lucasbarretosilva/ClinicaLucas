@@ -79,21 +79,21 @@ namespace ClinicaLucas.Controllers
                 }
 
                 else {
-                    bool consultaExistente = await _context.Consulta.AnyAsync(c => c.Data == consulta.Data);
+                     bool consultaExistente = await _context.Consulta.AnyAsync(c => c.Data == consulta.Data);
 
-                    if (consultaExistente)
-                    {
-                        ModelState.AddModelError("Data", "Já existe uma consulta agendada para este horário.");
-                    }
-                    else
-                    {
-                        consulta.Protocolo = Guid.NewGuid();
-                        _context.Add(consulta);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
-                    }
-
-
+                if (consultaExistente)
+                {
+                    ModelState.AddModelError("Data", "Já existe uma consulta agendada para este horário.");
+                }
+                else
+                {
+                    consulta.Protocolo = Guid.NewGuid();
+                    _context.Add(consulta);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                
+                
                 }
                 
                 

@@ -106,6 +106,7 @@ namespace ClinicaLucas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cpf,Nascimento,Telefone,Email,Sexo")] Paciente paciente)
         {
+            ViewBag.Sexos = SexoEnum();
             if (id != paciente.Id)
             {
                 return NotFound();
@@ -132,7 +133,7 @@ namespace ClinicaLucas.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Sexos = SexoEnum();
+            
             return View(paciente);
         }
 
